@@ -1,7 +1,7 @@
 <template>
   <div class="singer" ref="singer">
     <!--接受props-->
-    <list-view :data="singers"></list-view>
+    <list-view :data="singers" @select="selectSinger"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -11,6 +11,8 @@
   import Singer from 'common/js/singer'
   import { getSingerList } from 'api/singer'
   import { ERR_OK } from 'api/config'
+  // vuex提供的语法糖，向mutations发送数据
+  import { mapMutations } from 'vuex'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
@@ -24,6 +26,13 @@
       this._getSingerList()
     },
     methods: {
+      selectSinger (singer) {
+        this.$router.push({
+          path: `/singer/${singer.id}`
+        })
+        // 我们在这里就是利用mutation把singer存到公共仓库
+        this.setSinger(singer)
+      },
       _getSingerList () {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
@@ -77,7 +86,12 @@
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
         return hot.concat(ret)
-      }
+      },
+      // 可以通过以下来映射到mutations. this.setSinger(singer)的方式提交到mutation供其修改
+      ...mapMutations({
+        // 我们在这里设置了一个映射，setSinger就映射到了mutation里的SET_SINGER函数，以便我们方便修改
+        setSinger: 'SET_SINGER'
+      })
     },
     components: {
       ListView

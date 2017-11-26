@@ -5,6 +5,7 @@
  import router from './router'
  import 'common/stylus/index.styl'
  import VueLazyLoad from 'vue-lazyload'
+ import store from './store'
 
  fastclick.attach(document.body)
 // 在这里声明使用
@@ -15,5 +16,6 @@
  new Vue({
    el: '#app',
    render: h => h(App),
+   store,
    router
  })

@@ -1,4 +1,4 @@
-// 这些请求的数据固定的，我们把它封装起来
+// 这些请求的数据固定的，我们把它封装起来,利用object.assgin 填进去
 export const commonParams = {
   g_tk: 5381,
   inCharset: 'utf-8',
