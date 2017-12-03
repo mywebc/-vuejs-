@@ -88,8 +88,11 @@
       }
     },
     methods: {
+      refresh () {
+        this.$refs.listview.refresh()
+      },
       // 它是个子组件，只负责向外派发事件。它爸爸接受后决定是否激活，也就是singger.vue
-      selectItem(item) {
+      selectItem (item) {
         this.$emit('select', item)
       },
       onShortcutTouchStar (e) {

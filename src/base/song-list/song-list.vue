@@ -2,6 +2,9 @@
   <div class="song-list">
     <ul>
       <li @click="selectItem(song,index) " v-for="(song,index) in songs" class="item">
+        <div class="rank" v-show="rank">
+          <span :class="getRankCls(index)">{{getRankText(index)}}</span>
+        </div>
         <div class="content">
           <h2 class="name">{{song.name}}</h2>
           <p class="desc">{{getDesc(song)}}</p>
@@ -17,6 +20,10 @@
       songs: {
         type: Array,
         default: []
+      },
+      rank: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -26,6 +33,20 @@
       // 它只负责派发事件
       selectItem (item, index) {
         this.$emit('select', item, index)
+      },
+      // 如果索引小于2，给他加上不同的样式
+      getRankCls (index) {
+        if (index <= 2) {
+          return `icon icon${index}`
+        } else {
+          return 'text'
+        }
+      },
+      // 如果索引大于2，直接给数字
+      getRankText (index) {
+        if (index > 2) {
+          return index + 1
+        }
       }
     }
   }

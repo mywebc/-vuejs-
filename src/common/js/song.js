@@ -1,3 +1,7 @@
+import { getLyric } from 'api/song'
+import { ERR_OK } from 'api/config'
+import { Base64 } from 'js-base64'
+
 export default class Song {
   constructor ({id, mid, singer, name, album, duration, image, url}) {
     this.id = id
@@ -9,8 +13,28 @@ export default class Song {
     this.image = image
     this.url = url
   }
+
+// 进一步优化，不能每次currentsong发生变化时，都要调用他
+  getLyric () {
+    // 如果有歌词就直接返回歌词，注意是promise对象
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          // eslint-disable-next-line
+          reject('no lyric')
+        }
+      })
+    })
+  }
 }
 
+// 这个函数拿到原始数据后，详细的罗列整理属性
 export function createSong (musicData) {
   return new Song({
     id: musicData.songid,
@@ -26,7 +50,7 @@ export function createSong (musicData) {
 }
 
 // 在这里处理musicData中的singer
-function filterSinger (singer) {
+export function filterSinger (singer) {
   let ret = []
   // 如果传入的singer是空，那么我们也return空
   if (!singer) {
